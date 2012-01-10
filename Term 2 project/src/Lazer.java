@@ -15,7 +15,7 @@ public class Lazer
 		{
 			case Player.Pistol:
 				damage = 5;
-				waittime = 25;
+				waittime = 25;//test
 				break;
 		}
 		

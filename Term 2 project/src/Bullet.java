@@ -32,6 +32,7 @@ public class Bullet
 				damage = 5;
 				break;
 			case SMG:
+				damage = 3;
 				break;
 			case Assault_rifle:
 				break;

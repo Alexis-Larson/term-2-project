@@ -34,5 +34,6 @@ public class ImageRotator {
 		g.dispose();
 		return dimg;
 	}
+	//test
 
 }
