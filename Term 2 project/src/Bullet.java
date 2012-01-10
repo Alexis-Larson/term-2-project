@@ -17,7 +17,7 @@ public class Bullet
 	Assault_rifle = 2,
 	Machine_gun = 3,
 	Bolt_action_rifle = 4,
-	Semi_Auto_Sniper = 5;
+	Semi_auto_sniper = 5;
 	
 	public Bullet(int mousex, int mousey, Player player, int selectedweapon)
 	{
@@ -35,6 +35,16 @@ public class Bullet
 				damage = 3;
 				break;
 			case Assault_rifle:
+				damage = 8;
+				break;
+			case Machine_gun:
+				damage = 15;
+				break;
+			case Bolt_action_rifle:
+				damage = 100;
+				break;
+			case Semi_auto_sniper:
+				damage = 60;
 				break;
 		}
 		size = 4;
