@@ -35,7 +35,7 @@ public class Main {
 	private static int selectedweapon = Player.Pistol;
 	public static Lazer laser;
 	protected static int waittime = 31;
-	private static boolean uselazers = true;
+	private static boolean uselazers = false;
 	
 	//movement related
 	public static boolean 
@@ -87,6 +87,8 @@ public class Main {
 		frame.createBufferStrategy(3);
 		buffer = frame.getBufferStrategy();
 		setplayerimg(1);
+		pane = (Graphics2D) buffer.getDrawGraphics();
+		laser = new Lazer(player.x, player.y, player, selectedweapon);
 		timer = new Timer(20, new ActionListener()
 		{
 
@@ -96,8 +98,6 @@ public class Main {
 			}
 			
 		});
-		pane = (Graphics2D) buffer.getDrawGraphics();
-		laser = new Lazer(0, 0, player, selectedweapon);
 		timer.start();
 
 	}
@@ -108,7 +108,6 @@ public class Main {
 		
 		pane = (Graphics2D) buffer.getDrawGraphics();
 		pane.setColor(Color.white);
-		pane.drawLine(laser.startx, laser.starty, laser.endx, laser.endy);
 		pane.fillRect(player.previousx, player.previousy, player.width, player.height);
 		movement();
 		
@@ -131,7 +130,6 @@ public class Main {
 				{
 					bullets.add(new Bullet(mousex, mousey, player, selectedweapon));
 					waittime = 0;
-					
 				}
 		}
 		if(uselazers == false)
@@ -173,6 +171,7 @@ public class Main {
     	}
 
     	pane.drawString("Selected weapon: "+weapon, 0, height-10);
+    	pane.drawString("Waittime = "+waittime, 0, height);
     	//pane.drawString("shoot: "+shoot, 120, -10);
     	
 		updatezombies();
@@ -222,9 +221,8 @@ public class Main {
 			{
 				int btn = e.getButton();
 				if(btn == leftmouse)
-				{
 					shoot = true;
-				}
+
 			}
 
 			@Override

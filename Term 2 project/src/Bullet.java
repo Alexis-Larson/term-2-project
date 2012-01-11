@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Bullet
 {
 	public int damage;
@@ -11,7 +13,10 @@ public class Bullet
 	public double previousx;
 	public double previousy;
 	public static int waittime;
-	
+	private Random rand = new Random();
+	private int accuracy;
+	private int endx, endy;
+
 	public static final int 
 	Pistol = 0,
 	SMG	= 1,
@@ -26,34 +31,50 @@ public class Bullet
 		starty = player.centery;
 		previousx = startx;
 		previousy = starty;
-		angle = Math.atan2(mousey-starty, mousex-startx);
+		int xerror = rand.nextInt(accuracy);
+		int yerror = rand.nextInt(accuracy);
+		if(rand.nextBoolean())
+			endx = mousex + xerror;
+		else
+			endx = mousex - xerror;			
+		if(rand.nextBoolean())
+			endy = mousey + yerror;
+		else
+			endy = mousey - yerror;			
+		angle = Math.atan2(endy-starty, endx-startx);
 		x = ((speed)*Math.cos(angle));
 		y = ((speed)*Math.sin(angle));
 		switch(selectedweapon)
 		{
-			case Pistol:
-				waittime = 20;
+			case Bullet.Pistol:
+				waittime = 15;
 				damage = 5;
+				accuracy = 5;
 				break;
-			case SMG:
-				waittime = 6;
+			case Bullet.SMG:
+				waittime = 4;
 				damage = 3;
+				accuracy = 20;
 				break;
-			case Assault_rifle:
-				waittime = 10;
+			case Bullet.Assault_rifle:
+				waittime = 8;
 				damage = 8;
+				accuracy = 10;
 				break;
-			case Machine_gun:
-				waittime = 1;
+			case Bullet.Machine_gun:
+				waittime = 2;
 				damage = 15;
+				accuracy = 40;
 				break;
-			case Bolt_action_rifle:
-				waittime = 1;
+			case Bullet.Bolt_action_rifle:
+				waittime = 25;
 				damage = 100;
+				accuracy = 1;
 				break;
-			case Semi_auto_sniper:
-				waittime = 1;
+			case Bullet.Semi_auto_sniper:
+				waittime = 18;
 				damage = 60;
+				accuracy = 5;
 				break;
 		}
 		size = 4;
@@ -70,7 +91,6 @@ public class Bullet
 	}
 	public static int getWait(int selectedweapon)
 	{
-
 		return waittime;
 	}
 
