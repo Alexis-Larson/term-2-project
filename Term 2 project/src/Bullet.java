@@ -8,10 +8,11 @@ public class Bullet
 	public double angle;
 	public double x;
 	public double y;
-	public double previousx = x;
-	public double previousy = y;
+	public double previousx;
+	public double previousy;
+	public static int waittime;
 	
-	public final int 
+	public static final int 
 	Pistol = 0,
 	SMG	= 1,
 	Assault_rifle = 2,
@@ -23,27 +24,35 @@ public class Bullet
 	{
 		startx = player.centerx;
 		starty = player.centery;
+		previousx = startx;
+		previousy = starty;
 		angle = Math.atan2(mousey-starty, mousex-startx);
 		x = ((speed)*Math.cos(angle));
 		y = ((speed)*Math.sin(angle));
 		switch(selectedweapon)
 		{
 			case Pistol:
+				waittime = 20;
 				damage = 5;
 				break;
 			case SMG:
+				waittime = 6;
 				damage = 3;
 				break;
 			case Assault_rifle:
+				waittime = 10;
 				damage = 8;
 				break;
 			case Machine_gun:
+				waittime = 1;
 				damage = 15;
 				break;
 			case Bolt_action_rifle:
+				waittime = 1;
 				damage = 100;
 				break;
 			case Semi_auto_sniper:
+				waittime = 1;
 				damage = 60;
 				break;
 		}
@@ -53,7 +62,7 @@ public class Bullet
 	}
 	public void update()
 	{
-		speed += 5;
+		speed += 50;
 		previousx = x;
 		previousy = y;
 		x = ((speed)*Math.cos(angle)) + startx;
@@ -61,13 +70,8 @@ public class Bullet
 	}
 	public static int getWait(int selectedweapon)
 	{
-		switch(selectedweapon)
-		{
-			case 0:
-				
-				break;
-		}
-		return selectedweapon;
+
+		return waittime;
 	}
 
 }

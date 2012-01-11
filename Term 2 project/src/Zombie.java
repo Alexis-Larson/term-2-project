@@ -99,7 +99,7 @@ public class Zombie
 		for(int z = 0; z<Main.bullets.size()-1; z++)
 		{
 			Bullet bullet = Main.bullets.get(z);
-			if(rect.contains(bullet.x, bullet.y))
+			if(rect.intersectsLine(bullet.x, bullet.y, bullet.previousx, bullet.previousy))
 			{
 				previoushealth = health;
 				health -= bullet.damage;

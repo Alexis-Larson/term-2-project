@@ -35,6 +35,7 @@ public class Main {
 	private static int selectedweapon = Player.Pistol;
 	public static Lazer laser;
 	protected static int waittime = 31;
+	private static boolean uselazers = true;
 	
 	//movement related
 	public static boolean 
@@ -86,7 +87,7 @@ public class Main {
 		frame.createBufferStrategy(3);
 		buffer = frame.getBufferStrategy();
 		setplayerimg(1);
-		timer = new Timer(25, new ActionListener()
+		timer = new Timer(20, new ActionListener()
 		{
 
 			public void actionPerformed(ActionEvent arg0)
@@ -95,6 +96,8 @@ public class Main {
 			}
 			
 		});
+		pane = (Graphics2D) buffer.getDrawGraphics();
+		laser = new Lazer(0, 0, player, selectedweapon);
 		timer.start();
 
 	}
@@ -104,11 +107,9 @@ public class Main {
 		waittime++;
 		
 		pane = (Graphics2D) buffer.getDrawGraphics();
-		pane.setBackground(Color.white);
-		frame.setBackground(Color.white);
-		frame.setForeground(Color.white);
-		//pane.setColor(Color.white);
-		//pane.fillRect(player.previousx, player.previousy, player.width, player.height);
+		pane.setColor(Color.white);
+		pane.drawLine(laser.startx, laser.starty, laser.endx, laser.endy);
+		pane.fillRect(player.previousx, player.previousy, player.width, player.height);
 		movement();
 		
 		checkcollision();
@@ -119,34 +120,59 @@ public class Main {
 
 		if(shoot)
 		{
-			
-			if(waittime>Lazer.waittime)
-			{
-				laser = new Lazer(mousex, mousey, player, selectedweapon);
-				waittime = 0;
-			}
-			if(waittime>Bullet.getWait(selectedweapon))
-			{
-				bullets.add(new Bullet(mousex, mousey, player, selectedweapon));
-				waittime = 0;
-				
-			}
-			updatebullets();
+			if(uselazers)
+				if(waittime>Lazer.waittime)
+				{
+					laser = new Lazer(mousex, mousey, player, selectedweapon);
+					waittime = 0;
+				}
+			else
+				if(waittime>Bullet.getWait(selectedweapon))
+				{
+					bullets.add(new Bullet(mousex, mousey, player, selectedweapon));
+					waittime = 0;
+					
+				}
 		}
+		if(uselazers == false)
+			updatebullets();
 		
 		
      	//pane.setColor(Color.white);
      	//pane.fillRect(player.previousx, -player.previousy, player.width, player.width);
 		//try{pane.drawImage(ImageIO.read(new File("test map.png")), 0, -1080, null);}catch (IOException e){e.printStackTrace();}
     	
-    	//pane.setColor(Color.black);
-    	//pane.fillRect(0, -20, width, 20);
-    	//pane.setColor(Color.LIGHT_GRAY);
+    	pane.setColor(Color.black);
+    	pane.fillRect(0, height-20, width, 20);
+    	pane.setColor(Color.LIGHT_GRAY);
     	//pane.drawString("Angle: "+rotate, 0, 0);
     	//pane.drawString("Angle2: "+Math.atan2(mousex-player.centerx, mousey-player.centery), 0, -10);
     	//pane.drawString("X: "+Math.cos(Math.atan2(mousex-player.centerx, mousey-player.centery)), 0, 0);
     	//pane.drawString("Y: "+Math.sin(Math.atan2(mousex-player.centerx, mousey-player.centery)), 0, -10);
-    	//pane.drawString("Selected weapon: "+player.selectedweapon, 0, -10);
+    	String weapon = "";
+    	switch(selectedweapon)
+    	{
+    		case Bullet.Pistol:
+    			weapon = "Pistol";
+    			break;
+    		case Bullet.Assault_rifle:
+    			weapon = "Assault rifle";
+    			break;
+    		case Bullet.Bolt_action_rifle:
+    			weapon = "Bolt action rifle";
+    			break;
+    		case Bullet.Machine_gun:
+    			weapon = "Machine gun";
+    			break;
+    		case Bullet.Semi_auto_sniper:
+    			weapon = "Semi auto sniper";
+    			break;
+    		case Bullet.SMG:
+    			weapon = "SMG";
+    			break;
+    	}
+
+    	pane.drawString("Selected weapon: "+weapon, 0, height-10);
     	//pane.drawString("shoot: "+shoot, 120, -10);
     	
 		updatezombies();
@@ -209,9 +235,7 @@ public class Main {
 					shoot = false;
 			}
 			
-			@Override public void mouseClicked(MouseEvent e)
-			{
-			}
+			@Override public void mouseClicked(MouseEvent e){}
 			@Override public void mouseEntered(MouseEvent e){}
 			@Override public void mouseExited(MouseEvent e){}
 		});
@@ -220,12 +244,12 @@ public class Main {
 			@Override
 			public void mouseWheelMoved(MouseWheelEvent evt)
 			{
-				if(player.selectedweapon + evt.getWheelRotation()>5)
-					player.selectedweapon = 0;
-				else if(player.selectedweapon + evt.getWheelRotation()<0)
-					player.selectedweapon = 5;
+				if(selectedweapon + evt.getWheelRotation()>5)
+					selectedweapon = 0;
+				else if(selectedweapon + evt.getWheelRotation()<0)
+					selectedweapon = 5;
 				else
-					player.selectedweapon += evt.getWheelRotation();
+					selectedweapon += evt.getWheelRotation();
 			}
 			
 		});
