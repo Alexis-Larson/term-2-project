@@ -14,7 +14,7 @@ public class Bullet
 	public double previousy;
 	public static int waittime;
 	private Random rand = new Random();
-	private int accuracy;
+	int accuracy;
 	private int endx, endy;
 
 	public static final int 
@@ -27,23 +27,6 @@ public class Bullet
 	
 	public Bullet(int mousex, int mousey, Player player, int selectedweapon)
 	{
-		startx = player.centerx;
-		starty = player.centery;
-		previousx = startx;
-		previousy = starty;
-		int xerror = rand.nextInt(accuracy);
-		int yerror = rand.nextInt(accuracy);
-		if(rand.nextBoolean())
-			endx = mousex + xerror;
-		else
-			endx = mousex - xerror;			
-		if(rand.nextBoolean())
-			endy = mousey + yerror;
-		else
-			endy = mousey - yerror;			
-		angle = Math.atan2(endy-starty, endx-startx);
-		x = ((speed)*Math.cos(angle));
-		y = ((speed)*Math.sin(angle));
 		switch(selectedweapon)
 		{
 			case Bullet.Pistol:
@@ -62,7 +45,7 @@ public class Bullet
 				accuracy = 10;
 				break;
 			case Bullet.Machine_gun:
-				waittime = 2;
+				waittime = 1;
 				damage = 15;
 				accuracy = 40;
 				break;
@@ -77,6 +60,23 @@ public class Bullet
 				accuracy = 5;
 				break;
 		}
+		startx = player.centerx;
+		starty = player.centery;
+		previousx = startx;
+		previousy = starty;
+		int xerror = rand.nextInt(accuracy);
+		int yerror = rand.nextInt(accuracy);
+		if(rand.nextBoolean())
+			endx = mousex + xerror;
+		else
+			endx = mousex - xerror;			
+		if(rand.nextBoolean())
+			endy = mousey + yerror;
+		else
+			endy = mousey - yerror;			
+		angle = Math.atan2(endy-starty, endx-startx);
+		x = ((speed)*Math.cos(angle));
+		y = ((speed)*Math.sin(angle));
 		size = 4;
 
 		

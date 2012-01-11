@@ -51,6 +51,15 @@ public class Lazer
 		
 		startx = player.centerx;
 		starty = player.centery;
+		int xchange = startx - mousex;
+		int ychange = starty - mousey;
+		double distance = Math.sqrt(Math.pow(Math.abs(xchange), 2.0)+Math.pow(Math.abs(ychange), 2.0));
+		if(distance < 30)
+			accuracy--;
+		if(distance < 20)
+			accuracy--;
+		if(distance < 10)
+			accuracy--;
 		int xerror = rand.nextInt(accuracy);
 		int yerror = rand.nextInt(accuracy);
 		if(rand.nextBoolean())

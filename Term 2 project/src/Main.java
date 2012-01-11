@@ -119,18 +119,24 @@ public class Main {
 
 		if(shoot)
 		{
-			if(uselazers)
+			
+			if(uselazers == true)
+			{
 				if(waittime>Lazer.waittime)
 				{
 					laser = new Lazer(mousex, mousey, player, selectedweapon);
 					waittime = 0;
 				}
+			}
 			else
+			{
 				if(waittime>Bullet.getWait(selectedweapon))
 				{
+					System.out.println("new bullet");
 					bullets.add(new Bullet(mousex, mousey, player, selectedweapon));
 					waittime = 0;
 				}
+			}
 		}
 		if(uselazers == false)
 			updatebullets();
@@ -171,7 +177,7 @@ public class Main {
     	}
 
     	pane.drawString("Selected weapon: "+weapon, 0, height-10);
-    	pane.drawString("Waittime = "+waittime, 0, height);
+    	pane.drawString("Accuracy = "+bullets.get(0).accuracy, 0, height);
     	//pane.drawString("shoot: "+shoot, 120, -10);
     	
 		updatezombies();
