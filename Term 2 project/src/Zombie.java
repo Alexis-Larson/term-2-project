@@ -89,17 +89,17 @@ public class Zombie
 		Main.pane.drawString("health: "+health,x, y);
 		
 		
-		if(Main.laser != null)
-			if(rect.intersectsLine(Main.laser.startx, Main.laser.starty, Main.laser.endx, Main.laser.endy))
+		if(Main.lazer != null)
+			if(rect.intersectsLine(Main.lazer.startx, Main.lazer.starty, Main.lazer.endx, Main.lazer.endy))
 			{
 				previoushealth = health;
-				health -= Main.laser.damage;
+				health -= Main.lazer.damage;
 				System.out.println(""+health);
 			}					
 		for(int z = 0; z<Main.bullets.size()-1; z++)
 		{
 			Bullet bullet = Main.bullets.get(z);
-			if(rect.intersectsLine(bullet.x, bullet.y, bullet.previousx, bullet.previousy))
+			if(rect.intersectsLine(bullet.x, bullet.y, bullet.previousx, bullet.previousy) || rect.contains(bullet.x, bullet.y))
 			{
 				previoushealth = health;
 				health -= bullet.damage;

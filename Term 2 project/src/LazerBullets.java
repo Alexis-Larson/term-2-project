@@ -1,31 +1,23 @@
+import java.awt.Color;
 import java.util.Random;
 
-public class Bullet
+public class LazerBullets
 {
+	public static int waittime;
 	public int damage;
-	public int startx;
-	public int starty;
-	public int size;
-	public int speed = 0;
+	public int startx, starty;
+	public int length;
 	public double angle;
+	public int endx, endy;
+	private Random rand = new Random();
+	private int accuracy;
+	public int speed = 0;
 	public double x;
 	public double y;
 	public double previousx;
 	public double previousy;
-	public static int waittime;
-	private Random rand = new Random();
-	public int accuracy;
-	private int endx, endy;
-
-	public static final int 
-	Pistol = 0,
-	SMG	= 1,
-	Assault_rifle = 2,
-	Machine_gun = 3,
-	Bolt_action_rifle = 4,
-	Semi_auto_sniper = 5;
 	
-	public Bullet(int mousex, int mousey, Player player, int selectedweapon)
+	public LazerBullets(int mousex, int mousey, Player player, int selectedweapon)
 	{
 		switch(selectedweapon)
 		{
@@ -45,12 +37,12 @@ public class Bullet
 				accuracy = 10;
 				break;
 			case Bullet.Machine_gun:
-				waittime = 1;
+				waittime = 2;
 				damage = 15;
 				accuracy = 40;
 				break;
 			case Bullet.Bolt_action_rifle:
-				waittime = 50;
+				waittime = 25;
 				damage = 100;
 				accuracy = 1;
 				break;
@@ -60,6 +52,8 @@ public class Bullet
 				accuracy = 5;
 				break;
 		}
+		
+		
 		startx = player.centerx;
 		starty = player.centery;
 		previousx = startx;
@@ -82,25 +76,10 @@ public class Bullet
 		if(rand.nextBoolean())
 			endy = mousey + yerror;
 		else
-			endy = mousey - yerror;			
+			endy = mousey - yerror;
+		
 		angle = Math.atan2(endy-starty, endx-startx);
 		x = ((speed)*Math.cos(angle));
-		y = ((speed)*Math.sin(angle));
-		size = 4;
-
-		
+		y = ((speed)*Math.sin(angle));	
 	}
-	public void update()
-	{
-		speed += 50;
-		previousx = x;
-		previousy = y;
-		x = ((speed)*Math.cos(angle)) + startx;
-		y = ((speed)*Math.sin(angle)) + starty;
-	}
-	public static int getWait(int selectedweapon)
-	{
-		return waittime;
-	}
-
 }

@@ -10,41 +10,49 @@ public class Lazer
 	public double angle;
 	public int endx, endy;
 	private Random rand = new Random();
-	private int accuracy;
-	
+	public double distance;
+	public static int
+	accuracymodifier,
+	pistolaccuracymodifier = 100,
+	smgaccuracymodifier = 8,
+	assaultriflepistolaccuracymodifier = 15,
+	machinegunaccuracymodifier = 5,
+	boltactionrifleaccuracymodifier = 50,
+	semiautosniperaccuracymodifier = 25;
+		
 	public Lazer(int mousex, int mousey, Player player, int selectedweapon)
 	{
 		switch(selectedweapon)
 		{
 			case Bullet.Pistol:
-				waittime = 15;
+				waittime = 13;
 				damage = 5;
-				accuracy = 5;
+				accuracymodifier = pistolaccuracymodifier;
 				break;
 			case Bullet.SMG:
 				waittime = 4;
 				damage = 3;
-				accuracy = 20;
+				accuracymodifier = smgaccuracymodifier;
 				break;
 			case Bullet.Assault_rifle:
 				waittime = 8;
 				damage = 8;
-				accuracy = 10;
+				accuracymodifier = assaultriflepistolaccuracymodifier;
 				break;
 			case Bullet.Machine_gun:
 				waittime = 2;
 				damage = 15;
-				accuracy = 40;
+				accuracymodifier = 	machinegunaccuracymodifier;
 				break;
 			case Bullet.Bolt_action_rifle:
-				waittime = 25;
+				waittime = 100;
 				damage = 100;
-				accuracy = 1;
+				accuracymodifier = boltactionrifleaccuracymodifier;
 				break;
 			case Bullet.Semi_auto_sniper:
-				waittime = 18;
+				waittime =  18;
 				damage = 60;
-				accuracy = 5;
+				accuracymodifier = semiautosniperaccuracymodifier;
 				break;
 		}
 		
@@ -53,15 +61,9 @@ public class Lazer
 		starty = player.centery;
 		int xchange = startx - mousex;
 		int ychange = starty - mousey;
-		double distance = Math.sqrt(Math.pow(Math.abs(xchange), 2.0)+Math.pow(Math.abs(ychange), 2.0));
-		if(distance < 30)
-			accuracy--;
-		if(distance < 20)
-			accuracy--;
-		if(distance < 10)
-			accuracy--;
-		int xerror = rand.nextInt(accuracy);
-		int yerror = rand.nextInt(accuracy);
+		distance = Math.sqrt(Math.pow(Math.abs(xchange), 2.0)+Math.pow(Math.abs(ychange), 2.0));
+		int xerror = rand.nextInt(((int) distance/accuracymodifier)+1);
+		int yerror = rand.nextInt(((int) distance/accuracymodifier)+1);
 		if(rand.nextBoolean())
 			endx = mousex + xerror;
 		else
@@ -70,7 +72,56 @@ public class Lazer
 			endy = mousey + yerror;
 		else
 			endy = mousey - yerror;			
-		Main.pane.setColor(Color.red);
-		Main.pane.drawLine(startx, starty, endx, endy);		
+	}
+	public static void changeaccuracy(int selectedweapon, int change)
+	{
+		switch(selectedweapon)
+		{
+			case Bullet.Pistol:
+				if(pistolaccuracymodifier + change > 0 && pistolaccuracymodifier + change < 100)
+					pistolaccuracymodifier += change;			
+				break;
+			case Bullet.SMG:
+				if(smgaccuracymodifier + change > 0 && smgaccuracymodifier + change < 100)
+					smgaccuracymodifier += change;
+				break;
+			case Bullet.Assault_rifle:
+				if(assaultriflepistolaccuracymodifier + change > 0 && assaultriflepistolaccuracymodifier + change < 100)
+					assaultriflepistolaccuracymodifier += change;
+				break;
+			case Bullet.Machine_gun:
+				if(machinegunaccuracymodifier + change > 0 && machinegunaccuracymodifier + change < 100)
+					machinegunaccuracymodifier += change;
+				break;
+			case Bullet.Bolt_action_rifle:
+				if(boltactionrifleaccuracymodifier + change > 0 && boltactionrifleaccuracymodifier + change < 100)
+					boltactionrifleaccuracymodifier += change;
+				break;
+			case Bullet.Semi_auto_sniper:
+				if(semiautosniperaccuracymodifier + change > 0 && semiautosniperaccuracymodifier + change < 100)
+					semiautosniperaccuracymodifier += change;
+				break;
+		}		
+	}
+	public static int getaccuracy(int selectedweapon)
+	{
+		int accuracy = 0;
+		switch(selectedweapon)
+		{
+			case Bullet.Pistol:
+				accuracy = pistolaccuracymodifier;
+			case Bullet.SMG:
+				accuracy = smgaccuracymodifier;
+			case Bullet.Assault_rifle:
+				accuracy = assaultriflepistolaccuracymodifier;
+			case Bullet.Machine_gun:
+				accuracy = machinegunaccuracymodifier;
+			case Bullet.Bolt_action_rifle:
+				accuracy = boltactionrifleaccuracymodifier;
+			case Bullet.Semi_auto_sniper:
+				accuracy = semiautosniperaccuracymodifier;
+		}
+		return accuracy;		
+		
 	}
 }

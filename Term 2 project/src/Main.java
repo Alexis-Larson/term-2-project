@@ -33,9 +33,9 @@ public class Main {
 	private static BufferedImage selectedimg;
 	
 	private static int selectedweapon = Player.Pistol;
-	public static Lazer laser;
+	public static Lazer lazer;
 	protected static int waittime = 31;
-	private static boolean uselazers = false;
+	private static boolean uselazers = true;
 	
 	//movement related
 	public static boolean 
@@ -68,7 +68,8 @@ public class Main {
 		rightmouse = MouseEvent.BUTTON3;
 	public static boolean shoot = false;
 	
-	
+	private static boolean draw = false;	
+	public static boolean clearscreen;
 
 	
 	public static void main(String[] args) 
@@ -88,7 +89,7 @@ public class Main {
 		buffer = frame.getBufferStrategy();
 		setplayerimg(1);
 		pane = (Graphics2D) buffer.getDrawGraphics();
-		laser = new Lazer(player.x, player.y, player, selectedweapon);
+		lazer = new Lazer(player.x, player.y, player, 0);
 		timer = new Timer(20, new ActionListener()
 		{
 
@@ -104,10 +105,16 @@ public class Main {
 
 	protected static void draw()
 	{
+		if(clearscreen)
+		{
+			pane.setColor(Color.white);
+			pane.fillRect(0, 0, width, height);
+		}
 		waittime++;
 		
 		pane = (Graphics2D) buffer.getDrawGraphics();
 		pane.setColor(Color.white);
+		//pane.fillRect(0, 0, width, height);
 		pane.fillRect(player.previousx, player.previousy, player.width, player.height);
 		movement();
 		
@@ -117,14 +124,19 @@ public class Main {
 		player.centery = player.y+(player.height/2);
 		rotate = Math.toDegrees(Math.atan2(mousex-player.centerx, player.centery-mousey));	
 
+		int size = 0;
 		if(shoot)
 		{
-			
+			draw = true;
 			if(uselazers == true)
 			{
 				if(waittime>Lazer.waittime)
 				{
-					laser = new Lazer(mousex, mousey, player, selectedweapon);
+					lazer = new Lazer(mousex, mousey, player, selectedweapon);
+					pane.setColor(Color.red);
+					size = (((int) lazer.distance/lazer.accuracymodifier)+1)*2;
+					pane.drawRect(mousex-(size/2), mousey-(size/2), size, size);
+					pane.drawLine(lazer.startx, lazer.starty, lazer.endx, lazer.endy);
 					waittime = 0;
 				}
 			}
@@ -177,7 +189,9 @@ public class Main {
     	}
 
     	pane.drawString("Selected weapon: "+weapon, 0, height-10);
-    	pane.drawString("Accuracy = "+bullets.get(0).accuracy, 0, height);
+
+		if(draw)pane.drawString("Accuracy = "+lazer.accuracymodifier, 0, height);
+    	//if(bullets.size()>0)pane.drawString("Accuracy = "+bullets.get(0).accuracy, 0, height);
     	//pane.drawString("shoot: "+shoot, 120, -10);
     	
 		updatezombies();
@@ -187,7 +201,7 @@ public class Main {
 		player.previousx = player.x;
 		player.previousy = player.y;
 		pane.dispose();
-		laser = null;
+		lazer = null;
 	}
 	private static void updatebullets()
 	{
@@ -284,11 +298,22 @@ public class Main {
 			      if(key == keyright)moveright = true;
 			      if(key == KeyEvent.VK_SHIFT)sprintkey=true;
 			      if(key == KeyEvent.VK_T)zombies.add(newzombie());
+			      if(key == KeyEvent.VK_P)Lazer.changeaccuracy(selectedweapon, 1);
+			      if(key == KeyEvent.VK_L)Lazer.changeaccuracy(selectedweapon, -1);
+			      if(key == KeyEvent.VK_SPACE)clearscreen = true;
+			      
 			}
 			public void keyTyped(KeyEvent evt)
 			{
 			      int key = evt.getKeyCode();
 			      if(key == KeyEvent.VK_T)zombies.add(newzombie());
+			      if(key == KeyEvent.VK_Y)
+			      {
+			    	  if(uselazers)
+			    		  uselazers = false;
+			    	  else
+			    		  uselazers = true;
+			      }
 			}
 			public void keyReleased(KeyEvent evt)
 			{
@@ -298,6 +323,7 @@ public class Main {
 			      if(key == keyleft)moveleft = false;
 			      if(key == keyright)moveright = false;
 			      if(key == KeyEvent.VK_SHIFT)sprintkey = false;			      
+			      if(key == KeyEvent.VK_SPACE)clearscreen = false;
 			}
 		});
 	}
