@@ -11,46 +11,46 @@ public class Lazer
 	public int endx, endy;
 	private Random rand = new Random();
 	public double distance;
-	public static int
-	accuracymodifier,
-	pistolaccuracymodifier = 100,
-	smgaccuracymodifier = 10,
-	assaultriflepistolaccuracymodifier = 15,
-	machinegunaccuracymodifier = 8,
-	boltactionrifleaccuracymodifier = 50,
-	semiautosniperaccuracymodifier = 25;
+	public int
+	accuracymodifier;
+	public static int pistolaccuracymodifier = 100;
+	public static int smgaccuracymodifier = 10;
+	public static int assaultriflepistolaccuracymodifier = 15;
+	public static int machinegunaccuracymodifier = 8;
+	public static int boltactionrifleaccuracymodifier = 50;
+	public static int semiautosniperaccuracymodifier = 25;
 		
 	public Lazer(int mousex, int mousey, Player player, int selectedweapon)
 	{
 		switch(selectedweapon)
 		{
 			case Bullet.Pistol:
-				waittime = 13;
+				waittime = 8;
 				damage = 5;
 				accuracymodifier = pistolaccuracymodifier;
 				break;
 			case Bullet.SMG:
-				waittime = 4;
+				waittime = 2;
 				damage = 3;
 				accuracymodifier = smgaccuracymodifier;
 				break;
 			case Bullet.Assault_rifle:
-				waittime = 8;
+				waittime = 3;
 				damage = 8;
 				accuracymodifier = assaultriflepistolaccuracymodifier;
 				break;
 			case Bullet.Machine_gun:
-				waittime = 2;
+				waittime = 1;
 				damage = 15;
 				accuracymodifier = 	machinegunaccuracymodifier;
 				break;
 			case Bullet.Bolt_action_rifle:
-				waittime = 100;
+				waittime = 25;
 				damage = 100;
 				accuracymodifier = boltactionrifleaccuracymodifier;
 				break;
 			case Bullet.Semi_auto_sniper:
-				waittime =  18;
+				waittime =  12;
 				damage = 60;
 				accuracymodifier = semiautosniperaccuracymodifier;
 				break;

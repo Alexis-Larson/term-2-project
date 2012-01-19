@@ -16,6 +16,7 @@ public class Zombie
 	public int health;
 	public int speed;
 	public int previoushealth = health;
+	public int damage;
 	public static int 
 		width = 48, 
 		height = 48;
@@ -56,31 +57,37 @@ public class Zombie
 					img = ImageIO.read(new File("regular.png"));
 					health = 100+Main.zombiehealthmodify;
 					speed = 2;
+					damage = 2;
 					break;
 				case Zombie_Fast:
 					img = ImageIO.read(new File("fast.png"));
 					health = 70+Main.zombiehealthmodify;
 					speed = 4;
+					damage = 1;
 					break;
 				case Zombie_Large:
 					img = ImageIO.read(new File("large.png"));
 					health = 125+Main.zombiehealthmodify;
 					speed = 1;
+					damage = 4;
 					break;
 				case Zombie_Poison:
 					img = ImageIO.read(new File("poison.png"));
 					health = 100+Main.zombiehealthmodify;
 					speed = 2;
+					damage = 5;
 					break;
 				case Zombie_Brute:
 					img = ImageIO.read(new File("brute.png"));
 					health = 200+Main.zombiehealthmodify;
 					speed = 1;
+					damage = 10;
 					break;
 				case Zombie_Witch:
 					img = ImageIO.read(new File("witch.png"));
 					health = 300+Main.zombiehealthmodify;
 					speed = 6;
+					damage = 30;
 					break;
 			}
 		}
@@ -112,9 +119,6 @@ public class Zombie
 
 		rect.setRect(x, y, width, height);
 		
-		Main.pane.setColor(Color.white);
-		//Main.pane.drawString("health: "+previoushealth, previousx, previousy);
-		//Main.pane.fillRect(x, y-20, width+20, 20);
 		Main.pane.setColor(Color.green);
 		Main.pane.drawString("health: "+health,x, y);
 		
@@ -126,20 +130,11 @@ public class Zombie
 				health -= Main.lazer.damage;
 				System.out.println(""+health);
 			}					
-		for(int z = 0; z<Main.bullets.size()-1; z++)
-		{
-			Bullet bullet = Main.bullets.get(z);
-			if(rect.intersectsLine(bullet.x, bullet.y, bullet.previousx, bullet.previousy) || rect.contains(bullet.x, bullet.y))
-			{
-				previoushealth = health;
-				health -= bullet.damage;
-				System.out.println(""+health);
-			}
-		}
 		if(health <= 0)
 		{
 			Main.zombies.remove(zombienum);
 			Main.numOFzombieskilled++;
+			Main.numOFzombiesonfield--;
 		}
 	}
 	public BufferedImage rotateImage(double angle) 

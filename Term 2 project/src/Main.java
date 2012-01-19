@@ -42,10 +42,11 @@ public class Main {
 	
 	private static int selectedweapon = Player.Pistol;
 	public static Lazer lazer;
-	protected static int waittime = 31;
-	private static boolean uselazers = true;
+	protected static int waittime = 0;
+	public static int hurttime = 0;
 	
 	public static int numOFzombieskilled = 0;
+	private static boolean paused = false;
 	
 	//movement related
 	public static boolean 
@@ -71,7 +72,6 @@ public class Main {
 	
 	//mouse:
 	public static int mousex, mousey;
-	public static double rotate = 0;
 	public static final int
 		leftmouse = MouseEvent.BUTTON1,
 		middlemouse = MouseEvent.BUTTON2,
@@ -90,11 +90,17 @@ public class Main {
 	private static BufferedImage map;
 	public static int zombiehealthmodify;
 
+	private static BufferedImage GUI;
+
+	public static int numOFzombiesonfield = 0;
+	private static int maxnumOFzombies = 10;
+
+
 	
 	public Main(int newhealthmodifier, int mapnum, Boolean newzombie_Regular,
 			Boolean newzombie_Fast, Boolean newzombie_Large,Boolean newzombie_Poison,
 			Boolean newzombie_Brute, Boolean newzombie_Witch)
-	{
+	{		
 		zombiehealthmodify = newhealthmodifier;
 		
 		Zombie_Regular = newzombie_Regular;
@@ -124,12 +130,13 @@ public class Main {
 		}
 		catch (IOException e){e.printStackTrace();}
 		
+		try{GUI = ImageIO.read(new File("GUI.png"));}catch (IOException e){e.printStackTrace();}
+		
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] gs = ge.getScreenDevices();
 		frame = new JFrame(gs[0].getDefaultConfiguration());
 		frame.setUndecorated(true);
 		gs[0].setFullScreenWindow(frame);
-		//frame.setSize(720,405);
 		addlisteners();
 		width = frame.getWidth();
 		height = frame.getHeight();
@@ -140,7 +147,7 @@ public class Main {
 		setplayerimg(1);
 		pane = (Graphics2D) buffer.getDrawGraphics();
 		lazer = new Lazer(player.x, player.y, player, 0);
-		timer = new Timer(20, new ActionListener()
+		timer = new Timer(15, new ActionListener()
 		{
 
 			public void actionPerformed(ActionEvent arg0)
@@ -161,6 +168,11 @@ public class Main {
 	protected static void draw()
 	{
 		waittime++;
+		hurttime++;
+		
+		while(numOFzombiesonfield<maxnumOFzombies)
+			zombies.add(newzombie());
+		
 		
 		pane = (Graphics2D) buffer.getDrawGraphics();
 		pane.setColor(Color.white);
@@ -171,48 +183,39 @@ public class Main {
 		
 		player.centerx = player.x+(player.width/2);
 		player.centery = player.y+(player.height/2);
-		rotate = Math.toDegrees(Math.atan2(mousex-player.centerx, player.centery-mousey));	
+		player.rotate = Math.toDegrees(Math.atan2(mousex-player.centerx, player.centery-mousey));	
 
 		int size = 0;
 		if(shoot)
 		{
-			if(uselazers == true)
+			if(waittime>Lazer.waittime)
 			{
-				if(waittime>Lazer.waittime)
-				{
-					lazer = new Lazer(mousex, mousey, player, selectedweapon);
-					pane.setColor(Color.red);
-					size = (((int) lazer.distance/lazer.accuracymodifier)+1)*2;
-					pane.drawRect(mousex-(size/2), mousey-(size/2), size, size);
-					pane.drawLine(lazer.startx, lazer.starty, lazer.endx, lazer.endy);
-					waittime = 0;
-				}
-			}
-			else
-			{
-				if(waittime>Bullet.getWait(selectedweapon))
-				{
-					System.out.println("new bullet");
-					bullets.add(new Bullet(mousex, mousey, player, selectedweapon));
-					waittime = 0;
-				}
+				lazer = new Lazer(mousex, mousey, player, selectedweapon);
+				pane.setColor(Color.red);
+				size = (((int) lazer.distance/lazer.accuracymodifier)+1)*2;
+				pane.drawRect(mousex-(size/2), mousey-(size/2), size, size);
+				pane.drawLine(lazer.startx, lazer.starty, lazer.endx, lazer.endy);
+				waittime = 0;
 			}
 		}
-		if(uselazers == false)
-			updatebullets();
-		
-		
-     	//pane.setColor(Color.white);
-     	//pane.fillRect(player.previousx, -player.previousy, player.width, player.width);
-		//try{pane.drawImage(ImageIO.read(new File("test map.png")), 0, -1080, null);}catch (IOException e){e.printStackTrace();}
-    	
-    	pane.setColor(Color.black);
-    	pane.fillRect(0, height-20, width, 20);
+		    	
+		updatezombies();
+     	pane.drawImage(rotateImage(player.rotate, playerimg), player.x, player.y, null);
+     	
+     	player.update();
+     	updateGUI();
+     	
+     	buffer.show();
+  		
+		player.previousx = player.x;
+		player.previousy = player.y;
+		pane.dispose();
+		lazer = null;
+	}
+	private static void updateGUI()
+	{
+		pane.drawImage(GUI, null, 0, 0);
     	pane.setColor(Color.LIGHT_GRAY);
-    	//pane.drawString("Angle: "+rotate, 0, 0);
-    	//pane.drawString("Angle2: "+Math.atan2(mousex-player.centerx, mousey-player.centery), 0, -10);
-    	//pane.drawString("X: "+Math.cos(Math.atan2(mousex-player.centerx, mousey-player.centery)), 0, 0);
-    	//pane.drawString("Y: "+Math.sin(Math.atan2(mousex-player.centerx, mousey-player.centery)), 0, -10);
     	String weapon = "";
     	switch(selectedweapon)
     	{
@@ -235,36 +238,13 @@ public class Main {
     			weapon = "SMG";
     			break;
     	}
-
     	pane.drawString("Selected weapon: "+weapon, 0, height-10);
-
-		if(shoot)pane.drawString("Accuracy = "+lazer.accuracymodifier, 0, height);
-    	//if(bullets.size()>0)pane.drawString("Accuracy = "+bullets.get(0).accuracy, 0, height);
-    	//pane.drawString("shoot: "+shoot, 120, -10);
     	
-		updatezombies();
-     	pane.drawImage(rotateImage(rotate, playerimg), player.x, player.y, null);
-     	buffer.show();
-  		
-		player.previousx = player.x;
-		player.previousy = player.y;
-		pane.dispose();
-		lazer = null;
-	}
-	private static void updatebullets()
-	{
-		for(int z = 0; z<bullets.size(); z++)
-		{
-			Bullet bullet = bullets.get(z);
-			pane.setColor(Color.blue);
-			pane.fillOval((int) bullet.x,(int) bullet.y, bullet.size, bullet.size);
-			pane.setColor(Color.white);
-			pane.fillOval((int) bullet.previousx,(int) bullet.previousy, bullet.size, bullet.size);
- 			bullets.get(z).update();
- 			if(bullet.x>width+10 || bullet.x<0-10 || bullet.y<0-10 || bullet.y>height+10)
- 				Main.bullets.remove(z);
- 			System.out.println(bullets.size());
-		}
+    	pane.setColor(Color.red);
+    	pane.fillRect(0, height-20, player.health, 20);
+    	pane.drawString("X: "+mousex, 500,height-10);
+    	pane.drawString("Y: "+mousey, 500,height);
+    	
 	}
 
 	public static BufferedImage rotateImage(double angle, BufferedImage image) 
@@ -316,6 +296,8 @@ public class Main {
 					selectedweapon = 5;
 				else
 					selectedweapon += evt.getWheelRotation();
+				
+				setplayerimg(selectedweapon);
 			}
 			
 		});
@@ -346,22 +328,10 @@ public class Main {
 			      if(key == keyright)moveright = true;
 			      if(key == KeyEvent.VK_SHIFT)sprintkey=true;
 			      if(key == KeyEvent.VK_T)zombies.add(newzombie());
-			      if(key == KeyEvent.VK_P)Lazer.changeaccuracy(selectedweapon, 1);
-			      if(key == KeyEvent.VK_L)Lazer.changeaccuracy(selectedweapon, -1);
+			      if(key == KeyEvent.VK_Q)pausegame();				
 			      
 			}
-			public void keyTyped(KeyEvent evt)
-			{
-			      int key = evt.getKeyCode();
-			      if(key == KeyEvent.VK_T)zombies.add(newzombie());
-			      if(key == KeyEvent.VK_Y)
-			      {
-			    	  if(uselazers)
-			    		  uselazers = false;
-			    	  else
-			    		  uselazers = true;
-			      }
-			}
+			public void keyTyped(KeyEvent evt){}
 			public void keyReleased(KeyEvent evt)
 			{
 			      int key = evt.getKeyCode();
@@ -373,12 +343,18 @@ public class Main {
 			}
 		});
 	}
+
 	private static Zombie newzombie()
 	{
 		int x = rand.nextInt(width-Zombie.width);
 		int y = rand.nextInt(height-Zombie.height);
 		int zombietype = 0;
 		boolean notfound = true;
+		if(!Zombie_Regular && !Zombie_Fast && !Zombie_Brute && !Zombie_Large && !Zombie_Poison && Zombie_Witch)
+		{
+			zombietype = Zombie.Zombie_Witch;
+		}
+		else 
 		while(notfound)
 		{
 			int type = rand.nextInt(5);
@@ -425,6 +401,7 @@ public class Main {
   	  	pane.drawImage(zombie.rotateImage(zombie.rotate), zombie.x, zombie.y, null);
   	  
   	  	System.out.println("zombie added");
+  	  	numOFzombiesonfield++;
   	  	return zombie;
 	}
 	private static void updatezombies()
@@ -449,7 +426,7 @@ public class Main {
 			rightpenalty = 1;
 		double modify = 1;	
 		
-		if(rotate > -45 && rotate < 45)
+		if(player.rotate > -45 && player.rotate < 45)
 		{
 			//forward = up;
 			uppenalty = 1;
@@ -457,7 +434,7 @@ public class Main {
 			rightpenalty = 1;
 			downpenalty = 0;
 		}
-		else if(rotate > 135 || rotate < -135)
+		else if(player.rotate > 135 || player.rotate < -135)
 		{
 			//forward = down;
 			uppenalty = 0;
@@ -465,7 +442,7 @@ public class Main {
 			rightpenalty = 1;
 			downpenalty = 1;
 		}
-		else if(rotate > -135 && rotate < -45)
+		else if(player.rotate > -135 && player.rotate < -45)
 		{
 			//forward = left;
 			uppenalty = 1;
@@ -473,7 +450,7 @@ public class Main {
 			rightpenalty = 1;
 			downpenalty = 1;
 		}
-		else if(rotate > 45 && rotate < 135)
+		else if(player.rotate > 45 && player.rotate < 135)
 		{
 			//forward = right;
 			uppenalty = 1;
@@ -513,12 +490,42 @@ public class Main {
 	
 	public static void setplayerimg(int x)
 	{
-		if(x == 1)selectedimg = player.Pistolimg;
-		if(x == 2)selectedimg = player.SMGimg;
-		if(x == 3)selectedimg = player.Assault_rifleimg;
-		if(x == 4)selectedimg = player.Machine_gunimg;
-		if(x == 5)selectedimg = player.Bolt_action_rifleimg;
-		if(x == 6)selectedimg = player.Semi_Auto_Sniperimg;		
+		if(x == 0)selectedimg = player.Pistolimg;
+		if(x == 1)selectedimg = player.SMGimg;
+		if(x == 2)selectedimg = player.Assault_rifleimg;
+		if(x == 3)selectedimg = player.Machine_gunimg;
+		if(x == 4)selectedimg = player.Bolt_action_rifleimg;
+		if(x == 5)selectedimg = player.Semi_Auto_Sniperimg;		
 	}
 
+	protected static void pausegame()
+	{
+		BufferedImage controls = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		try{controls = ImageIO.read(new File("Controls.png"));}
+		catch (IOException e){e.printStackTrace();}
+		pane = (Graphics2D) buffer.getDrawGraphics();
+		pane.drawImage(controls, null, 0, 0);
+		buffer.show();
+		buffer.show();
+		if(paused)
+		{
+			paused = false;
+			timer.start();
+		}
+		else
+		{
+			paused = true;
+			timer.stop();
+		}
+	}
+	public static void gameover()
+	{
+		timer.stop();
+		BufferedImage gameover = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		try{gameover = ImageIO.read(new File("GAME OVER.png"));}
+		catch (IOException e){e.printStackTrace();}
+		pane = (Graphics2D) buffer.getDrawGraphics();
+		pane.drawImage(gameover, null, 0, 0);
+		buffer.show();
+	}
 }
