@@ -75,7 +75,7 @@ public class Starter extends JFrame {
 			
 			
 			public void actionPerformed(ActionEvent e) {
-				if(!Zombie_Regular && !Zombie_Fast && !Zombie_Brute && !Zombie_Witch && !Zombie_Large){
+				if(!Zombie_Regular && !Zombie_Fast && !Zombie_Brute && !Zombie_Witch && !Zombie_Large && !Zombie_Poison){
 					//show error
 					ErrorZombies EZ = new ErrorZombies();
 					EZ.setVisible(true);

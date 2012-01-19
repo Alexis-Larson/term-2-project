@@ -24,8 +24,8 @@ public class Player
 	public int 
 		centerx = x+(width/2), 
 		centery = y+(height/2);
-	public final int movespeed = 3;
-	protected final int movespeed_sprint = 5;
+	public final int movespeed = 4;
+	protected final int movespeed_sprint = 6;
 	
 	public int selectedweapon = 0;
 	public static final int 

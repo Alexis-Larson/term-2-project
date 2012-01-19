@@ -13,7 +13,8 @@ import javax.imageio.ImageIO;
 
 public class Zombie
 {
-	public int health = 100;
+	public int health;
+	public int speed;
 	public int previoushealth = health;
 	public static int 
 		width = 48, 
@@ -28,10 +29,10 @@ public class Zombie
 		centerx = x+(width/2), 
 		centery = y+(height/2);
 	public Rectangle2D rect;
-	public BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+	public BufferedImage img;
+	public BufferedImage zombieimg = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 	public double rotate;
 	public double angle;
-	public int speed = 1;
 	
 	public static final int 
 	Zombie_Regular = 0,
@@ -42,7 +43,7 @@ public class Zombie
 	Zombie_Witch = 5;
 
 	
-	public Zombie(int newx, int newy, Player newplayer, int zombietype)
+	public Zombie(int newx, int newy, int zombietype)
 	{
 		x = newx;
 		y = newy;
@@ -52,28 +53,34 @@ public class Zombie
 			switch(zombietype)
 			{
 				case Zombie_Regular:
-					img = ImageIO.read(new File("player.png"));
-					
+					img = ImageIO.read(new File("regular.png"));
+					health = 100+Main.zombiehealthmodify;
+					speed = 2;
 					break;
 				case Zombie_Fast:
-					img = ImageIO.read(new File("player.png"));
-					
+					img = ImageIO.read(new File("fast.png"));
+					health = 70+Main.zombiehealthmodify;
+					speed = 4;
 					break;
 				case Zombie_Large:
-					img = ImageIO.read(new File("player.png"));
-					
+					img = ImageIO.read(new File("large.png"));
+					health = 125+Main.zombiehealthmodify;
+					speed = 1;
 					break;
 				case Zombie_Poison:
-					img = ImageIO.read(new File("player.png"));
-					
+					img = ImageIO.read(new File("poison.png"));
+					health = 100+Main.zombiehealthmodify;
+					speed = 2;
 					break;
 				case Zombie_Brute:
-					img = ImageIO.read(new File("player.png"));
-					
+					img = ImageIO.read(new File("brute.png"));
+					health = 200+Main.zombiehealthmodify;
+					speed = 1;
 					break;
 				case Zombie_Witch:
-					img = ImageIO.read(new File("player.png"));
-					
+					img = ImageIO.read(new File("witch.png"));
+					health = 300+Main.zombiehealthmodify;
+					speed = 6;
 					break;
 			}
 		}
@@ -130,6 +137,21 @@ public class Zombie
 			}
 		}
 		if(health <= 0)
+		{
 			Main.zombies.remove(zombienum);
+			Main.numOFzombieskilled++;
+		}
 	}
+	public BufferedImage rotateImage(double angle) 
+	{
+		try{zombieimg = ImageIO.read(new File("transparent.png"));}
+		catch (IOException e){e.printStackTrace();}
+		Graphics2D g = zombieimg.createGraphics();
+		g.setColor(Color.white);
+ 		g.rotate(Math.toRadians(angle), width/2, height/2);
+ 		g.drawImage(img, null,0, 0);
+		g.dispose();
+		return zombieimg;
+	}
+
 }

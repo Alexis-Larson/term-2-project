@@ -1,5 +1,6 @@
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -43,6 +44,8 @@ public class Main {
 	public static Lazer lazer;
 	protected static int waittime = 31;
 	private static boolean uselazers = true;
+	
+	public static int numOFzombieskilled = 0;
 	
 	//movement related
 	public static boolean 
@@ -101,10 +104,6 @@ public class Main {
 		Zombie_Brute = newzombie_Brute;
 		Zombie_Witch = newzombie_Witch;
 		
-		//"Baseball Stadium"
-		//"Terminal"
-		//"Road Side"
-		//"Field"	
 		try
 		{
 			switch(mapnum)
@@ -116,7 +115,7 @@ public class Main {
 					map = ImageIO.read(new File("Terminal.png"));
 					break;
 				case 2:
-					map = ImageIO.read(new File("Road.png"));
+					map = ImageIO.read(new File("road.png"));
 					break;
 				case 3:
 					map = ImageIO.read(new File("Field.png"));
@@ -135,6 +134,7 @@ public class Main {
 		width = frame.getWidth();
 		height = frame.getHeight();
 		frame.setVisible(true);
+		frame.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 		frame.createBufferStrategy(3);
 		buffer = frame.getBufferStrategy();
 		setplayerimg(1);
@@ -168,7 +168,6 @@ public class Main {
 		
 		movement();
 		
-		checkcollision();
 		
 		player.centerx = player.x+(player.width/2);
 		player.centery = player.y+(player.height/2);
@@ -270,9 +269,9 @@ public class Main {
 
 	public static BufferedImage rotateImage(double angle, BufferedImage image) 
 	{
+		try{playerimg = ImageIO.read(new File("transparent.png"));}
+		catch (IOException e){e.printStackTrace();}
 		Graphics2D g = playerimg.createGraphics();
-		g.setColor(Color.white);
-		g.fillRect(0, 0, player.width, player.height);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
  		g.rotate(Math.toRadians(angle), player.width/2, player.height/2);
  		g.drawImage(selectedimg, null,0, 0);
@@ -382,7 +381,7 @@ public class Main {
 		boolean notfound = true;
 		while(notfound)
 		{
-			int type = rand.nextInt(6);
+			int type = rand.nextInt(5);
 			switch(type)
 			{
 				case Zombie.Zombie_Regular:
@@ -420,17 +419,10 @@ public class Main {
 						notfound = false;
 					}
 					break;
-				case Zombie.Zombie_Witch:
-					if(Zombie_Witch)
-					{
-						zombietype = Zombie.Zombie_Witch;
-						notfound = false;
-					}
-					break;
 			}
 		}
-		Zombie zombie = new Zombie(x, y, player, zombietype);
-  	  	pane.drawImage(rotateImage(zombie.rotate,zombie.img), zombie.x, zombie.y, null);
+		Zombie zombie = new Zombie(x, y, zombietype);
+  	  	pane.drawImage(zombie.rotateImage(zombie.rotate), zombie.x, zombie.y, null);
   	  
   	  	System.out.println("zombie added");
   	  	return zombie;
@@ -441,7 +433,7 @@ public class Main {
 		{
 			Zombie zombie = zombies.get(x);
 			zombie.update(x);
-	     	pane.drawImage(rotateImage(zombie.rotate,zombie.img), zombie.x, zombie.y, null);
+	     	pane.drawImage(zombie.rotateImage(zombie.rotate), zombie.x, zombie.y, null);
 		}
 		
 	}
@@ -519,10 +511,6 @@ public class Main {
 		}		
 	}
 	
-	protected static void checkcollision()
-	{
-		
-	}
 	public static void setplayerimg(int x)
 	{
 		if(x == 1)selectedimg = player.Pistolimg;

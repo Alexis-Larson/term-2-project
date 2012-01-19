@@ -14,9 +14,9 @@ public class Lazer
 	public static int
 	accuracymodifier,
 	pistolaccuracymodifier = 100,
-	smgaccuracymodifier = 8,
+	smgaccuracymodifier = 10,
 	assaultriflepistolaccuracymodifier = 15,
-	machinegunaccuracymodifier = 5,
+	machinegunaccuracymodifier = 8,
 	boltactionrifleaccuracymodifier = 50,
 	semiautosniperaccuracymodifier = 25;
 		
