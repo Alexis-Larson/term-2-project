@@ -6,6 +6,9 @@ import java.awt.GraphicsEnvironment;
 import java.awt.RenderingHints;
 import java.awt.image.*;
 import java.util.ArrayList;
+import java.util.Random;
+
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import java.awt.event.ActionListener;
@@ -17,8 +20,12 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.File;
+import java.io.IOException;
 
 public class Main {
+	
+	public static Random rand = new Random();
 	
 	public static Graphics2D pane;
 	public static JFrame frame;
@@ -29,7 +36,7 @@ public class Main {
 	public static ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 	public static Player player = new Player();
 	
-	private static BufferedImage playerimg = new BufferedImage(player.width,player.height,BufferedImage.TYPE_4BYTE_ABGR);
+	private static BufferedImage playerimg = new BufferedImage(player.width+2,player.height+2,BufferedImage.TYPE_4BYTE_ABGR);
 	private static BufferedImage selectedimg;
 	
 	private static int selectedweapon = Player.Pistol;
@@ -68,12 +75,55 @@ public class Main {
 		rightmouse = MouseEvent.BUTTON3;
 	public static boolean shoot = false;
 	
-	private static boolean draw = false;	
-	public static boolean clearscreen;
+	
+	public static Boolean 
+		Zombie_Regular,
+		Zombie_Fast,
+		Zombie_Large,
+		Zombie_Poison,
+		Zombie_Brute,
+		Zombie_Witch;
+
+	private static BufferedImage map;
+	public static int zombiehealthmodify;
 
 	
-	public static void main(String[] args) 
+	public Main(int newhealthmodifier, int mapnum, Boolean newzombie_Regular,
+			Boolean newzombie_Fast, Boolean newzombie_Large,Boolean newzombie_Poison,
+			Boolean newzombie_Brute, Boolean newzombie_Witch)
 	{
+		zombiehealthmodify = newhealthmodifier;
+		
+		Zombie_Regular = newzombie_Regular;
+		Zombie_Fast = newzombie_Fast;
+		Zombie_Large = newzombie_Large;
+		Zombie_Poison = newzombie_Poison;
+		Zombie_Brute = newzombie_Brute;
+		Zombie_Witch = newzombie_Witch;
+		
+		//"Baseball Stadium"
+		//"Terminal"
+		//"Road Side"
+		//"Field"	
+		try
+		{
+			switch(mapnum)
+			{
+				case 0:
+					map = ImageIO.read(new File("Baseball.png"));
+					break;
+				case 1:
+					map = ImageIO.read(new File("Terminal.png"));
+					break;
+				case 2:
+					map = ImageIO.read(new File("Road.png"));
+					break;
+				case 3:
+					map = ImageIO.read(new File("Field.png"));
+					break;
+			}
+		}
+		catch (IOException e){e.printStackTrace();}
 		
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice[] gs = ge.getScreenDevices();
@@ -103,19 +153,19 @@ public class Main {
 
 	}
 
+	public static void main(String[] args) 
+	{
+		new Main(0, 0, true, true, true, true, true, true);
+	}
+
 	protected static void draw()
 	{
-		if(clearscreen)
-		{
-			pane.setColor(Color.white);
-			pane.fillRect(0, 0, width, height);
-		}
 		waittime++;
 		
 		pane = (Graphics2D) buffer.getDrawGraphics();
 		pane.setColor(Color.white);
-		//pane.fillRect(0, 0, width, height);
-		pane.fillRect(player.previousx, player.previousy, player.width, player.height);
+		pane.drawImage(map, null, 0, 0);
+		
 		movement();
 		
 		checkcollision();
@@ -127,7 +177,6 @@ public class Main {
 		int size = 0;
 		if(shoot)
 		{
-			draw = true;
 			if(uselazers == true)
 			{
 				if(waittime>Lazer.waittime)
@@ -190,7 +239,7 @@ public class Main {
 
     	pane.drawString("Selected weapon: "+weapon, 0, height-10);
 
-		if(draw)pane.drawString("Accuracy = "+lazer.accuracymodifier, 0, height);
+		if(shoot)pane.drawString("Accuracy = "+lazer.accuracymodifier, 0, height);
     	//if(bullets.size()>0)pane.drawString("Accuracy = "+bullets.get(0).accuracy, 0, height);
     	//pane.drawString("shoot: "+shoot, 120, -10);
     	
@@ -226,7 +275,7 @@ public class Main {
 		g.fillRect(0, 0, player.width, player.height);
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
  		g.rotate(Math.toRadians(angle), player.width/2, player.height/2);
- 		g.drawImage(selectedimg, null, 0, 0);
+ 		g.drawImage(selectedimg, null,0, 0);
 		g.dispose();
 		return playerimg;
 	}
@@ -300,7 +349,6 @@ public class Main {
 			      if(key == KeyEvent.VK_T)zombies.add(newzombie());
 			      if(key == KeyEvent.VK_P)Lazer.changeaccuracy(selectedweapon, 1);
 			      if(key == KeyEvent.VK_L)Lazer.changeaccuracy(selectedweapon, -1);
-			      if(key == KeyEvent.VK_SPACE)clearscreen = true;
 			      
 			}
 			public void keyTyped(KeyEvent evt)
@@ -323,18 +371,69 @@ public class Main {
 			      if(key == keyleft)moveleft = false;
 			      if(key == keyright)moveright = false;
 			      if(key == KeyEvent.VK_SHIFT)sprintkey = false;			      
-			      if(key == KeyEvent.VK_SPACE)clearscreen = false;
 			}
 		});
 	}
 	private static Zombie newzombie()
 	{
-
-  	  Zombie zombie = new Zombie(100, 100, player);
-  	  pane.drawImage(rotateImage(zombie.rotate,zombie.img), zombie.x, zombie.y, null);
+		int x = rand.nextInt(width-Zombie.width);
+		int y = rand.nextInt(height-Zombie.height);
+		int zombietype = 0;
+		boolean notfound = true;
+		while(notfound)
+		{
+			int type = rand.nextInt(6);
+			switch(type)
+			{
+				case Zombie.Zombie_Regular:
+					if(Zombie_Regular)
+					{
+						zombietype = Zombie.Zombie_Regular;
+						notfound = false;
+					}
+					break;
+				case Zombie.Zombie_Fast:
+					if(Zombie_Fast)
+					{
+						zombietype = Zombie.Zombie_Fast;
+						notfound = false;
+					}
+					break;
+				case Zombie.Zombie_Large:
+					if(Zombie_Large)
+					{
+						zombietype = Zombie.Zombie_Large;
+						notfound = false;
+					}
+					break;
+				case Zombie.Zombie_Poison:
+					if(Zombie_Poison)
+					{
+						zombietype = Zombie.Zombie_Poison;
+						notfound = false;
+					}
+					break;
+				case Zombie.Zombie_Brute:
+					if(Zombie_Brute)
+					{
+						zombietype = Zombie.Zombie_Brute;
+						notfound = false;
+					}
+					break;
+				case Zombie.Zombie_Witch:
+					if(Zombie_Witch)
+					{
+						zombietype = Zombie.Zombie_Witch;
+						notfound = false;
+					}
+					break;
+			}
+		}
+		Zombie zombie = new Zombie(x, y, player, zombietype);
+  	  	pane.drawImage(rotateImage(zombie.rotate,zombie.img), zombie.x, zombie.y, null);
   	  
-  	  System.out.println("zombie added");
-  	  return zombie;
+  	  	System.out.println("zombie added");
+  	  	return zombie;
 	}
 	private static void updatezombies()
 	{
@@ -391,32 +490,32 @@ public class Main {
 			downpenalty = 1;
 		}
 
-		if(moveup&&moveleft)
+		if(moveup&&moveleft&&player.y-((speed/modify)-uppenalty) > 0&& player.x -((speed/modify)-leftpenalty) >0 )
 		{
 			player.y -= (speed/modify)-uppenalty;
 			player.x -= (speed/modify)-leftpenalty;
 		}
-		else if(moveup&&moveright)
+		else if(moveup&&moveright&&player.y-((speed/modify)-uppenalty) > 0&& player.x -((speed/modify)-leftpenalty) <width-player.width)
 		{
 			player.y -= (speed/modify)-uppenalty;
 			player.x += (speed/modify)-rightpenalty;					
 		}
-		else if(movedown&&moveleft)
+		else if(movedown&&moveleft&&player.y+((speed/modify)-uppenalty) < height-player.height&& player.x -((speed/modify)-leftpenalty) >0)
 		{
 			player.y += (speed/modify)-downpenalty;
 			player.x -= (speed/modify)-leftpenalty;										
 		}
-		else if(movedown&&moveright)
+		else if(movedown&&moveright&&player.y+((speed/modify)-uppenalty) < height-player.height&& player.x -((speed/modify)-leftpenalty) <width-player.width)
 		{
 			player.y += (speed/modify)-downpenalty;
 			player.x += (speed/modify)-rightpenalty;										
 		}
 		else
 		{
-			if(moveup)player.y -= speed-uppenalty;
-			if(movedown)player.y += speed-downpenalty;
-			if(moveleft)player.x -= speed-leftpenalty;
-			if(moveright)player.x += speed-rightpenalty;					
+			if(moveup&&player.y-((speed/modify)-uppenalty) > 0)player.y -= speed-uppenalty;
+			if(movedown&&player.y+((speed/modify)-uppenalty) < height-player.height)player.y += speed-downpenalty;
+			if(moveleft&& player.x -((speed/modify)-leftpenalty) >0)player.x -= speed-leftpenalty;
+			if(moveright&& player.x -((speed/modify)-leftpenalty) <width-player.width)player.x += speed-rightpenalty;					
 		}		
 	}
 	

@@ -15,48 +15,71 @@ public class Zombie
 {
 	public int health = 100;
 	public int previoushealth = health;
-	public int width = 48, height = 48;
-	public int x = 100, y = 100;
-	public int previousx = 100, previousy = 100;
+	public static int 
+		width = 48, 
+		height = 48;
+	public int 
+		x = 100, 
+		y = 100;
+	public int 
+		previousx = 100, 
+		previousy = 100;
 	public int 
 		centerx = x+(width/2), 
 		centery = y+(height/2);
 	public Rectangle2D rect;
-	public BufferedImage 
-		img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR),
-		selectedimg;
+	public BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 	public double rotate;
 	public double angle;
 	public int speed = 1;
 	
+	public static final int 
+	Zombie_Regular = 0,
+	Zombie_Fast = 1,
+	Zombie_Large = 2,
+	Zombie_Poison = 3,
+	Zombie_Brute = 4,
+	Zombie_Witch = 5;
+
 	
-	public Zombie(int newx, int newy, Player newplayer)
+	public Zombie(int newx, int newy, Player newplayer, int zombietype)
 	{
 		x = newx;
 		y = newy;
 		rect = new Rectangle(x, y, width, height);
 		try
 		{
-			selectedimg = ImageIO.read(new File("player.png"));
+			switch(zombietype)
+			{
+				case Zombie_Regular:
+					img = ImageIO.read(new File("player.png"));
+					
+					break;
+				case Zombie_Fast:
+					img = ImageIO.read(new File("player.png"));
+					
+					break;
+				case Zombie_Large:
+					img = ImageIO.read(new File("player.png"));
+					
+					break;
+				case Zombie_Poison:
+					img = ImageIO.read(new File("player.png"));
+					
+					break;
+				case Zombie_Brute:
+					img = ImageIO.read(new File("player.png"));
+					
+					break;
+				case Zombie_Witch:
+					img = ImageIO.read(new File("player.png"));
+					
+					break;
+			}
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		catch (IOException e){e.printStackTrace();}
 	}
-	
-	public BufferedImage rotateImage(double angle, BufferedImage image) 
-	{
-		Graphics2D g = img.createGraphics();
-		g.setColor(Color.white);
-		g.fillRect(0, 0, width, height);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
- 		g.rotate(Math.toRadians(angle), width/2, height/2);
- 		g.drawImage(selectedimg, null, 0, 0);
-		g.dispose();
-		return img;
-	}
-	
+		
 	public void update(int zombienum)
 	{
 		centerx = x+(width/2);
@@ -83,9 +106,9 @@ public class Zombie
 		rect.setRect(x, y, width, height);
 		
 		Main.pane.setColor(Color.white);
-		Main.pane.drawString("health: "+previoushealth, previousx, previousy);
-		Main.pane.fillRect(x, y-20, width+20, 20);
-		Main.pane.setColor(Color.black);
+		//Main.pane.drawString("health: "+previoushealth, previousx, previousy);
+		//Main.pane.fillRect(x, y-20, width+20, 20);
+		Main.pane.setColor(Color.green);
 		Main.pane.drawString("health: "+health,x, y);
 		
 		
