@@ -1,8 +1,6 @@
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.RenderingHints;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -86,7 +84,7 @@ public class Zombie
 				case Zombie_Witch:
 					img = ImageIO.read(new File("witch.png"));
 					health = 300+Main.zombiehealthmodify;
-					speed = 6;
+					speed = 8;
 					damage = 30;
 					break;
 			}
@@ -128,13 +126,13 @@ public class Zombie
 			{
 				previoushealth = health;
 				health -= Main.lazer.damage;
-				System.out.println(""+health);
 			}					
 		if(health <= 0)
 		{
 			Main.zombies.remove(zombienum);
 			Main.numOFzombieskilled++;
 			Main.numOFzombiesonfield--;
+			Main.numOFzombiesUNTILwitch--;
 		}
 	}
 	public BufferedImage rotateImage(double angle) 

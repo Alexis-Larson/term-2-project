@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.util.Random;
 
 public class Lazer
@@ -13,43 +12,44 @@ public class Lazer
 	public double distance;
 	public int
 	accuracymodifier;
-	public static int pistolaccuracymodifier = 100;
-	public static int smgaccuracymodifier = 10;
-	public static int assaultriflepistolaccuracymodifier = 15;
-	public static int machinegunaccuracymodifier = 8;
-	public static int boltactionrifleaccuracymodifier = 50;
-	public static int semiautosniperaccuracymodifier = 25;
+	public static int 
+		pistolaccuracymodifier = 100,
+		smgaccuracymodifier = 10,
+		assaultriflepistolaccuracymodifier = 15,
+		machinegunaccuracymodifier = 8,
+		boltactionrifleaccuracymodifier = 50,
+		semiautosniperaccuracymodifier = 25;
 		
 	public Lazer(int mousex, int mousey, Player player, int selectedweapon)
 	{
 		switch(selectedweapon)
 		{
-			case Bullet.Pistol:
+			case Player.Pistol:
 				waittime = 8;
 				damage = 5;
 				accuracymodifier = pistolaccuracymodifier;
 				break;
-			case Bullet.SMG:
+			case Player.SMG:
 				waittime = 2;
 				damage = 3;
 				accuracymodifier = smgaccuracymodifier;
 				break;
-			case Bullet.Assault_rifle:
-				waittime = 3;
+			case Player.Assault_rifle:
+				waittime = 2;
 				damage = 8;
 				accuracymodifier = assaultriflepistolaccuracymodifier;
 				break;
-			case Bullet.Machine_gun:
+			case Player.Machine_gun:
 				waittime = 1;
-				damage = 15;
+				damage = 5;
 				accuracymodifier = 	machinegunaccuracymodifier;
 				break;
-			case Bullet.Bolt_action_rifle:
+			case Player.Bolt_action_rifle:
 				waittime = 25;
 				damage = 100;
 				accuracymodifier = boltactionrifleaccuracymodifier;
 				break;
-			case Bullet.Semi_auto_sniper:
+			case Player.Semi_Auto_Sniper:
 				waittime =  12;
 				damage = 60;
 				accuracymodifier = semiautosniperaccuracymodifier;
@@ -108,18 +108,24 @@ public class Lazer
 		int accuracy = 0;
 		switch(selectedweapon)
 		{
-			case Bullet.Pistol:
+			case Player.Pistol:
 				accuracy = pistolaccuracymodifier;
-			case Bullet.SMG:
+				break;
+			case Player.SMG:
 				accuracy = smgaccuracymodifier;
-			case Bullet.Assault_rifle:
+				break;
+			case Player.Assault_rifle:
 				accuracy = assaultriflepistolaccuracymodifier;
-			case Bullet.Machine_gun:
+				break;
+			case Player.Machine_gun:
 				accuracy = machinegunaccuracymodifier;
-			case Bullet.Bolt_action_rifle:
+				break;
+			case Player.Bolt_action_rifle:
 				accuracy = boltactionrifleaccuracymodifier;
-			case Bullet.Semi_auto_sniper:
+				break;
+			case Player.Semi_Auto_Sniper:
 				accuracy = semiautosniperaccuracymodifier;
+				break;
 		}
 		return accuracy;		
 		

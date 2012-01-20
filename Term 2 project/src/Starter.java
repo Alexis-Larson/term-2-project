@@ -1,37 +1,20 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
-import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
-import javax.swing.JMenuBar;
 import javax.swing.JSlider;
 import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.JToggleButton;
-import javax.swing.JRadioButton;
 import javax.swing.JCheckBox;
 import java.awt.Color;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Panel;
-import java.awt.Choice;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JMenu;
 import javax.swing.JComboBox;
 
 
+@SuppressWarnings("serial")
 public class Starter extends JFrame {
 	public Boolean 
 		Zombie_Regular = false,
@@ -89,10 +72,6 @@ public class Starter extends JFrame {
 			}
 		});
 		
-		
-		
-		
-		
 		btnStart.setBounds(468, 302, 89, 23);
 		contentPane.add(btnStart);
 		
@@ -110,7 +89,7 @@ public class Starter extends JFrame {
 		slider.setMinorTickSpacing(1);
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				int modifier = 25;
+				int modifier = 20;
 				if(slider.getValue() == 3)
 				{
 					lblComment.setText("You're Insane");
