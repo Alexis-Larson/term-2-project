@@ -77,27 +77,27 @@ public class Lazer
 	{
 		switch(selectedweapon)
 		{
-			case Bullet.Pistol:
+			case Player.Pistol:
 				if(pistolaccuracymodifier + change > 0 && pistolaccuracymodifier + change < 100)
 					pistolaccuracymodifier += change;			
 				break;
-			case Bullet.SMG:
+			case Player.SMG:
 				if(smgaccuracymodifier + change > 0 && smgaccuracymodifier + change < 100)
 					smgaccuracymodifier += change;
 				break;
-			case Bullet.Assault_rifle:
+			case Player.Assault_rifle:
 				if(assaultriflepistolaccuracymodifier + change > 0 && assaultriflepistolaccuracymodifier + change < 100)
 					assaultriflepistolaccuracymodifier += change;
 				break;
-			case Bullet.Machine_gun:
+			case Player.Machine_gun:
 				if(machinegunaccuracymodifier + change > 0 && machinegunaccuracymodifier + change < 100)
 					machinegunaccuracymodifier += change;
 				break;
-			case Bullet.Bolt_action_rifle:
+			case Player.Bolt_action_rifle:
 				if(boltactionrifleaccuracymodifier + change > 0 && boltactionrifleaccuracymodifier + change < 100)
 					boltactionrifleaccuracymodifier += change;
 				break;
-			case Bullet.Semi_auto_sniper:
+			case Player.Semi_Auto_Sniper:
 				if(semiautosniperaccuracymodifier + change > 0 && semiautosniperaccuracymodifier + change < 100)
 					semiautosniperaccuracymodifier += change;
 				break;
