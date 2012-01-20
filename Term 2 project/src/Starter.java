@@ -221,12 +221,12 @@ public class Starter extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("Project Urban Undead");
 		lblNewLabel.setFont(new Font("MS UI Gothic", Font.PLAIN, 28));
-		lblNewLabel.setBounds(156, 11, 272, 53);
+		lblNewLabel.setBounds(125, 11, 276, 53);
 		contentPane.add(lblNewLabel);
 		
 		JLabel lblCreatedByBen = new JLabel("Created By Peter Larson and Ben Zhang");
 		lblCreatedByBen.setFont(new Font("Century Gothic", Font.PLAIN, 15));
-		lblCreatedByBen.setBounds(132, 75, 312, 38);
+		lblCreatedByBen.setBounds(132, 75, 263, 38);
 		contentPane.add(lblCreatedByBen);
 		
 		JLabel lblArea = new JLabel("Area");
