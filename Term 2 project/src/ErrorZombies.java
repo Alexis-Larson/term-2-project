@@ -3,6 +3,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 
 
+@SuppressWarnings("serial")
 public class ErrorZombies extends JDialog {
 
 	/**
